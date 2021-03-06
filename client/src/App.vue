@@ -1,14 +1,10 @@
 <template>
-  <HelloWorld msg="Hello Vue 3.0 + Vite" />
+    <router-view class="min-h-screen" />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+  name: 'App'
 }
 </script>
