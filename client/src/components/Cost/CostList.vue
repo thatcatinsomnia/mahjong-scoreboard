@@ -13,13 +13,13 @@
           <span class="p-3 flex-1">成本</span>
         </div>
 
-        <div class="flex relative items-center" v-for="cost in state.costs" :key="cost.name">
-          <CostRowData :cost="cost"
-            @deleteCost="deleteCost"
-            @updateName="updateName"
-            @updateValue="updateValue"
-          />
-        </div>
+        <CostRowData v-for="cost in state.costs" 
+          :key="cost.name"
+          :cost="cost"
+          @deleteCost="deleteCost"
+          @updateName="updateName"
+          @updateValue="updateValue"
+        />
       </div>
       
       <div class="mt-4 flex">

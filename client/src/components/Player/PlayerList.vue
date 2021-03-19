@@ -13,13 +13,13 @@
           <span class="p-3 flex-1">玩家分數</span>
         </div>
 
-        <div class="flex relative items-center" v-for="player in state.players" :key="player.id">
-          <PlayerRowData :player="player"
+          <PlayerRowData v-for="player in state.players" 
+            :key="player.id"
+            :player="player"
             @deletePlayer="deletePlayer"
             @updateName="updateName"
             @updateScore="updateScore"
           />
-        </div>
       </div>
       
       <div class="mt-4 flex">
