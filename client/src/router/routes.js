@@ -11,6 +11,21 @@ const routes = [
     path: "/game/new",
     name: "NewGame",
     component: () => import('/@/views/NewGame.vue')
+  },
+  {
+    path: "/preferences",
+    name: 'Preferences',
+    component: () => import('/@/views/Preferences.vue')
+  },
+  {
+    path: '/preferences/new',
+    name: 'NewPreference',
+    component: () => import('/@/views/NewPreference.vue')
+  },
+  {
+    path: "/card-type",
+    name: 'CardType',
+    component: () => import('/@/views/CardType.vue')
   }
 ];
 
