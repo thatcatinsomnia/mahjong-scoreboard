@@ -4,13 +4,18 @@
       牌型台數
       <span class="absolute text-gray-600 right-4 transform transition" :class="{ '-rotate-90': isOpen  }">◀︎</span>
     </h2>
-
-    <div class="py-2" v-show="isOpen">
-      <div class="px-3 py-1 flex" v-for="hand in hands" :key="hand.id">
-        <h3 class="text-green-600">{{ hand.name }}：</h3>
-        <h3>{{ hand.value }} 台</h3>
+    <template v-if="hands.length">
+      <div class="py-2" v-show="isOpen">
+        <div class="px-3 py-1 flex" v-for="hand in hands" :key="hand.id">
+          <h3 class="text-green-600">{{ hand.name }}：</h3>
+          <h3>{{ hand.value }} 台</h3>
+        </div>
       </div>
-    </div>
+    </template>
+
+    <template v-else>
+      <p class="py-3 text-center text-green-500" v-show="isOpen">尚未設定台數</p>
+    </template>
   </div>
 </template>
 
