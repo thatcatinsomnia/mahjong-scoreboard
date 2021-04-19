@@ -4,11 +4,11 @@
       牌型台數
       <span class="absolute text-gray-600 right-4 transform transition" :class="{ '-rotate-90': isOpen  }">◀︎</span>
     </h2>
-    <template v-if="hands.length">
+    <template v-if="handPoints.length">
       <div class="py-2" v-show="isOpen">
-        <div class="px-3 py-1 flex" v-for="hand in hands" :key="hand.id">
-          <h3 class="text-green-600">{{ hand.name }}：</h3>
-          <h3>{{ hand.value }} 台</h3>
+        <div class="px-3 py-1 flex" v-for="handPoint in handPoints" :key="handPoint.id">
+          <h3 class="text-green-600">{{ handPoint.hand.name }}：</h3>
+          <h3>{{ handPointDesc(handPoint.points) }}</h3>
         </div>
       </div>
     </template>
@@ -20,17 +20,24 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 export default {
   name: 'PreferenceHands',
   props: {
-    hands: Array
+    handPoints: Array
   },
   setup() {
     const isOpen = ref(false);
 
-    return { isOpen };
+    const handPointDesc = computed(() => {
+      return points => points > 0 ? points + ' 台' : '未設定';
+    }); 
+
+    return { 
+      isOpen,
+      handPointDesc
+    };
   }
   
 }

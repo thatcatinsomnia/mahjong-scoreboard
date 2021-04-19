@@ -13,14 +13,25 @@ const routes = [
     component: () => import('/@/views/NewGame.vue')
   },
   {
-    path: "/preferences",
-    name: 'Preferences',
-    component: () => import('/@/views/Preferences.vue')
-  },
-  {
     path: '/preferences/new',
     name: 'NewPreference',
-    component: () => import('/@/views/NewPreference.vue')
+    component: () => import('/@/views/PrefDetail.vue'),
+    props: {
+      isEdit: false
+    }
+  },
+  {
+    path: '/preferences/:id',
+    name: 'EditPreference',
+    component: () => import('/@/views/PrefDetail.vue'),
+    props: {
+      isEdit: true
+    }
+  },
+  {
+    path: "/preferences",
+    name: 'Preferences',
+    component: () => import('/@/views/Prefs.vue')
   },
   {
     path: "/card-type",

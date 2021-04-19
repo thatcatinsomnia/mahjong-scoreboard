@@ -1,19 +1,19 @@
 <template>
   <div>
     <Title>設定檔列表</Title>
-    <PreferenceList />
+    <PrefsList />
   </div>
 </template>
 
 <script>
 import Title from '/@/components/UI/Title.vue';
-import PreferenceList from '/@/components/Preference/PreferenceList.vue';
+import PrefsList from '/@/components/Preference/PrefsList.vue';
 
 export default {
   name: 'Preferences',
   components: {
     Title,
-    PreferenceList
+    PrefsList
   }
 }
 </script>
