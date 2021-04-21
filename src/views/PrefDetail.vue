@@ -1,8 +1,11 @@
 <template>
   <div v-if="!isSubmit">
     <Title>{{ title }}</Title>
-    
-    <div class="mx-auto p-6 mb-12 max-w-3xl rounded shadow-lg border-t-4 border-green-500 text-gray-600 ">
+    <div class="mb-1 px-6 flex justify-end" v-if="isEdit">
+      <button class="px-6 py-1 bg-red-500 hover:bg-red-600 transition text-white rounded" @click="deletePref($route.params.id)">刪除</button>
+    </div>
+    <div class="mx-auto px-6 py-10 mb-12 max-w-3xl rounded shadow-lg border-t-4 border-green-500 text-gray-600 ">
+
       <div class="mb-6 flex flex-col">
         <label class="text-lg mb-2">設定檔名稱：</label>
         <input type="text" class="px-3 py-2 border border-gray-300 focus:ring focus:ring-green-500 outline-none rounded" v-model="pref.name" />
@@ -27,11 +30,11 @@
         <p class="mb-2 text-lg">台數設定：</p> 
 
         <div class="p-4 border border-gray-700 border-opacity-10 rounded">
-            <div class="mb-6 flex flex-col" v-for="hand in hands" :key="hand.id">
-              <label class="text-lg mb-2">{{ isEdit ? hand.hand.name : hand.name }}:</label>
+            <div class="mb-6 flex flex-col" v-for="hand in pref.handPoints" :key="hand.id">
+              <label class="text-lg mb-2">{{ hand.name }}:</label>
               <input type="text" class="px-3 py-2 border border-gray-300 focus:ring focus:ring-green-500 outline-none rounded" 
-                :value="hand.points" 
-                @input="updateHandPoints($event, hand.id)" 
+                :value="hand.points ? hand.points : ''"
+                @input="updateHandPoints($event, hand.hand_id)" 
               />
             </div>  
         </div>
@@ -53,7 +56,7 @@
     </div>
   </div>
 
-  <div class="py-20 text-center" v-else>Creating...</div>
+  <div class="py-20 text-center" v-else>{{ message.error ? message.error : message.default }}</div>
 </template>
 
 <script>
@@ -64,7 +67,7 @@ import HandServices from '/@/services/handServices';
 import PrefServices from '/@/services/prefServices';
 
 export default {
-  name: 'PreferenceDetail',
+  name: 'PrefDetail',
   props: {
     isEdit: Boolean // pass from router
   },
@@ -75,7 +78,11 @@ export default {
     const router = useRouter();
     const route = useRoute();
 
-    const hands = ref([]);
+    const message = reactive({
+      default: 'CREATING...',
+      error: ''
+    });
+    const avaiableHands = ref([]);
     const pref = reactive({
       name: '',
       rate: null,
@@ -91,38 +98,34 @@ export default {
     });
 
     const updateHandPoints = (event, handId) => {
-      const hand = hands.value.find(hand => hand.id === handId);
-      hand.points = parseInt(event.target.value);
+      let points = parseInt(event.target.value);
+      
+      if (isNaN(points) || !points) points = 0;
+
+      const hand = pref.handPoints.find(hp => hp.hand_id === handId);
+      hand.points = points;
     };
 
     const onSubmit = async () => {
       isSubmit.value = true;
+      message.default = 'CREATING...';
+      message.error = '';
+
       let res;
       if (!props.isEdit) {
         // update value when submit for creation
-        pref.handPoints = [];
-        updateHandPointsValue();
-
         res = await PrefServices.create(pref);
       } else {
+        // submit for update
         res = await PrefServices.patchById(route.params.id, pref);
       }
-      
+
       if (`${res.status}`.startsWith(2)) {
         return router.push({ path: '/preferences' });
-      }
+      } 
 
-      // todo: do something when error
+      message.error = `FAIL: \n${res.data.message}`;
     };
-
-    const updateHandPointsValue = () => {
-      for (let hand of hands.value) {
-        pref.handPoints.push({
-          hand_id: hand.id,
-          points: hand.points || 0
-        });
-      }
-    }
 
     const onCancel = () => {
       router.replace({ name: 'Preferences' });
@@ -141,42 +144,86 @@ export default {
         PrefServices.fetchById(route.params.id),
         HandServices.fetchAll()
       ]);
-      const { name, rate, price, times, handPoints } = {...res[0].data};
-      const handList = ;
 
+      const { name, rate, price, times, handPoints } = {...res[0].data};
+      avaiableHands.value = res[1].data;
       pref.name = name;
       pref.rate = rate;
       pref.price = price;
       pref.times = times;
-      hands.value = res[1].data;
-      
-      // todo: handle user hand point data in both create and update
+      pref.handPoints = syncHandPoints(avaiableHands.value, handPoints);
     };
 
     const initCreatePage = async () => {
       const res = await HandServices.fetchAll();
 
       if (res.status === 200) {
-        hands.value = res.data;
+        avaiableHands.value = res.data;
 
         // fill all hands with points 0
         for (let data of res.data) {
           pref.handPoints.push({
             'hand_id': data.id,
+            'name': data.name,
             'points': 0,
           });
         }
       }
     };
 
+    // sync the avaiableHands and user pref handPoints
+    // situation 1: the handPoints is already exist
+    // => push id and it's points for "update"
+    // situation 2: current handPoints is missing (in available but not in handPoints)
+    // => push the hand_id and set points to 0 for "create" 
+    // situation 3: handPoints exist but not exist in hand
+    // => do nothing, the api will remove it 
+    const syncHandPoints = (avaiableHands, handPoints) => {
+      return avaiableHands.map(hand => {
+        const exist = handPoints.find(hp => hp.hand_id === hand.id);
+
+        if (exist) {
+          const { id, points, hand_id } = exist;
+          const name = exist.hand.name;
+          
+          return {
+            id,
+            hand_id, 
+            name,
+            points
+          }
+        }
+
+        return {
+          name: hand.name,
+          hand_id: hand.id,
+          points: 0
+        }
+      });
+    };
+
+    const deletePref = async id => {
+      isSubmit.value = true;
+      message.default = 'DELETED...';
+      const res = await PrefServices.deleteById(id);
+
+      if (res.status === 204) {
+        router.replace({ path: '/preferences' });
+      } else {
+        message.error = `FAIL: delete pref ${id} failed.`
+      }
+    };
+
     return {
       title,
+      message,
       isSubmit,
       pref,
-      hands,
+      avaiableHands,
       updateHandPoints,
       onSubmit,
-      onCancel
+      onCancel,
+      deletePref
     }
   }
 }

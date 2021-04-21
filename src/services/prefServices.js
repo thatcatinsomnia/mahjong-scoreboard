@@ -4,29 +4,55 @@ export default (function() {
   const url = '/api/v1/users/2/preferences';
   
   const fetchAll = async () => {
-    const res = await axios.get(url);
-    return res
+    try {
+      const res = await axios.get(url);
+      return res;
+    } catch (err) {
+      return err.response;
+    }
   };
 
   const fetchById = async id => {
-    const res = await axios.get(`${url}/${id}`);
-    return res
+    try {
+      const res = await axios.get(`${url}/${id}`);
+      return res
+    } catch (err) {
+      return err.response;
+    }
   };
 
   const create = async pref => {
-    const res = await axios.post(url, pref);
-    return res;
+    try {
+      const res = await axios.post(url, pref);
+      return res;
+    } catch (err) {
+      return err.response;
+    }
   }
 
   const patchById = async (id, pref) => {
-    const res = await axios.patch(`${url}/${id}`, pref);
-    return res;
+    try {
+      const res = await axios.patch(`${url}/${id}`, pref);
+      return res;
+    } catch (err) {
+      return err.response;
+    }
+  };
+
+  const deleteById = async id => {
+    try {
+      const res = await axios.delete(`${url}/${id}`);
+      return res;
+    } catch (err) {
+      return err.response;
+    }
   };
 
   return {
     fetchAll,
     fetchById,
     create,
-    patchById
+    patchById,
+    deleteById
   };
 })();

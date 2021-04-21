@@ -6,10 +6,12 @@
     </h2>
     <template v-if="handPoints.length">
       <div class="py-2" v-show="isOpen">
-        <div class="px-3 py-1 flex" v-for="handPoint in handPoints" :key="handPoint.id">
-          <h3 class="text-green-600">{{ handPoint.hand.name }}：</h3>
-          <h3>{{ handPointDesc(handPoint.points) }}</h3>
-        </div>
+        <template v-for="handPoint in handPoints" :key="handPoint.id" >
+          <div class="px-3 py-1 flex" v-if="handPoint.points !== 0">
+            <h3 class="text-green-600">{{ handPoint.hand.name }}：</h3>
+            <h3>{{ handPointDesc(handPoint.points) }}</h3>
+          </div>
+        </template>
       </div>
     </template>
 
@@ -23,7 +25,7 @@
 import { ref, computed } from 'vue';
 
 export default {
-  name: 'PreferenceHands',
+  name: 'PrefHands',
   props: {
     handPoints: Array
   },

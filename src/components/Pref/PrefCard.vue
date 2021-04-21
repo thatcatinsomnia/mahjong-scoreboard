@@ -29,11 +29,11 @@
 
 <script>
 import { useRouter } from 'vue-router';
-import PrefColumn from '/@/components/Preference/PrefColumn.vue';
-import PrefHands from '/@/components/Preference/PrefHands.vue';
+import PrefColumn from '/@/components/Pref/PrefColumn.vue';
+import PrefHands from '/@/components/Pref/PrefHands.vue';
 
 export default {
-  name: 'PreferenceCard',
+  name: 'PrefCard',
   props: {
     pref: Object
   },

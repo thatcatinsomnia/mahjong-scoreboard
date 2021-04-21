@@ -12,6 +12,6 @@
 
 <script>
 export default {
-  name: 'PreferenceColumn'
+  name: 'PrefColumn'
 }
 </script>

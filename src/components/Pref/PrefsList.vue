@@ -1,7 +1,7 @@
 <template>
   <main class="mx-auto mb-16 px-2 max-w-2xl">
     <div class="mb-3 flex justify-end">
-      <router-link class="px-8 py-2 bg-green-500 text-white rounded hover:bg-green-600" to='/preferences/new'>新增</router-link>
+      <button class="px-8 py-2 bg-green-500 text-white rounded hover:bg-green-600" @click="goCreation">新增</button>
     </div>
 
     <template v-if="prefs.length">
@@ -12,17 +12,23 @@
 
 <script>
 import { onBeforeMount, ref } from 'vue';
-import PrefCard from '/@/components/Preference/PrefCard.vue';
+import { useRouter } from 'vue-router';
+import PrefCard from '/@/components/Pref/PrefCard.vue';
 import prefServices from '/@/services/prefServices';
 
 export default {
-  name: 'PreferenceList',
+  name: 'PreList',
   components: {
     PrefCard
   },
   setup() {
+    const router = useRouter();
     const prefs = ref([]);
- 
+
+    const goCreation = () => {
+      router.push({ name: 'NewPreference' });
+    };
+
     onBeforeMount(async () => {
       const res = await prefServices.fetchAll();
       if (res.status === 200) {
@@ -31,7 +37,8 @@ export default {
     });
 
     return {
-      prefs
+      prefs,
+      goCreation
     }
   }
 }
