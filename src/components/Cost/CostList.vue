@@ -57,9 +57,9 @@ export default {
     const totalCost = computed(() => {
       let total = 0;
 
-      // costs.value.forEach(cost => {
-      //   total += parseInt(cost.value);
-      // });
+      costs.value.forEach(cost => {
+        total += parseInt(cost.value);
+      });
 
       return total;
     });
