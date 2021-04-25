@@ -7,49 +7,58 @@
 
       <div class="mb-4">
         <div class="mb-2">
-          <label class="py-2 mr-2 inline-block">面額/積分</label>
-          <select class="p-1 border border-gray-400">
-            <option value="100/200">100/20</option>
-            <option value="100/200">200/400</option>
-            <option value="100/200">500/1000</option>
+          <label class="py-2 mr-2 block">選擇設定檔</label>
+          <select class="p-1 border border-gray-400" @change="updateConfig">
+            <option value="null" selected>請選擇設定檔</option>
+            <option :value="pref.id" v-for="pref in state.prefs" :key="pref.id">{{ pref.name }}</option>
           </select>
-        </div>
-        <div class="py-12 w-full border border-red-300 text-center">
-          各牌型台數顯示區域
         </div>
       </div>
 
       <div class="flex mb-2">
         <div class="flex-1">
-          <label class="block mb-1">單次東錢：</label>
-          <input class="px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model="state.admissionFee">
+          <label class="block mb-1">面額/積分</label>
+          <input class="px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model="pickedPref.rate">
         </div>
 
-        <div class="ml-2 flex-1">
-          <label class="block mb-1">次數：</label>
-          <input class="px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model="state.times">
+        <div class="flex-1">
+          <label class="block mb-1">單次東錢：</label>
+          <input class="ml-2 px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model="pickedPref.price">
         </div>
       </div>
 
+      <div class="flex mb-2">
         <div class="flex-1">
-          <label class="block mb-1">回合/降：</label>
-          <input class="px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text"  v-model="state.round">
+          <label class="block mb-1">次數：</label>
+          <input class="px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model="pickedPref.times">
         </div>
 
-        <span class="py-4 block">東錢總額：{{ totalOfAdmissionFee }}</span>
+        <div class="flex-1">
+          <label class="block mb-1">回合/降：</label>
+          <input class="ml-2 px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text"  v-model="pickedPref.rounds">
+        </div>
+      </div>
+
+      <span class="py-4 block">東錢總額：{{ totalOfAdmissionFee }}</span>
     </main>
 
     <PlayerList />
     <CostList />
+
+    <div class="mb-8 mx-auto max-w-2xl flex items-center text-white">
+      <button class="flex-1 py-2 px-4 bg-green-500 hover:bg-green-600" @click="createGameRecord">submit</button>
+      <button class="ml-2 flex-1 py-2 px-4 bg-gray-400 hover:bg-gray-500">cancel</button>
+    </div>
   </div>
 </template>
 
 
 <script>
-import { reactive, computed } from 'vue';
+import { reactive, computed, onBeforeMount } from 'vue';
 import Title from '/@/components/UI/Title.vue';
 import PlayerList from '/@/components/Player/PlayerList.vue';
 import CostList from '/@/components/Cost/CostList.vue';
+import PrefServices from '/@/services/prefServices';
 
 export default {
   name: 'NewGame',
@@ -60,18 +69,46 @@ export default {
   },
   setup() {
     const state = reactive({
-      round: 3,
-      admissionFee: 0,
-      times: 0
+      prefs: [],
+    });
+
+    const pickedPref = reactive({
+      name: '',
+      rate: '',
+      price: '',
+      times: '',
+      rounds: ''
     });
 
     const totalOfAdmissionFee = computed(() => {
-      return parseInt(state.admissionFee) * parseInt(state.times) * 3;
+      return 'price * times * player-count'
     });
     
+    const updateConfig = event => {
+      const pickedId = event.target.value;
+      const picked = state.prefs.find(pref => pref.id.toString() === pickedId);
+
+      pickedPref.name = picked ? picked.name : '';
+      pickedPref.rate = picked ? picked.rate : '';
+      pickedPref.price = picked ? picked.price : 0;
+      pickedPref.times = picked ? picked.times : 0;
+      pickedPref.rounds = picked ? picked.rounds : 0;
+    };
+
+    const createGameRecord = () => {
+      console.log('create');
+    };
+
+    onBeforeMount(async () => {
+      const res = await PrefServices.fetchAll();
+      state.prefs = res.data;
+    });
+
     return {
       state,
-      totalOfAdmissionFee
+      totalOfAdmissionFee,
+      updateConfig,
+      pickedPref
     }
   }
 
