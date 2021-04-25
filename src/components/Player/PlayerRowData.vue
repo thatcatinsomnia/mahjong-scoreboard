@@ -9,7 +9,7 @@
       <input class="p-2 flex-1 outline-none focus:ring-2 focus:ring-green-500 hover:bg-gray-200" type="text" v-model="playerScore" @input="$emit('updateScore', {id: player.id, score: playerScore})">
     </div>
 
-    <button class="px-4 py-1 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600 absolute left-full transform translate-x-3" 
+    <button class="px-4 py-1 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600 absolute left-full transform translate-x-3 whitespace-nowrap" 
       @click="$emit('deletePlayer', player.id)" 
     >
       刪除
