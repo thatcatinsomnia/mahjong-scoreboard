@@ -3,8 +3,12 @@
 </template>
 
 <script>
+import { useCostProvider } from '/@/composables/cost';
 
 export default {
-  name: 'App'
+  name: 'App',
+  setup() {
+    useCostProvider();
+  }
 }
 </script>

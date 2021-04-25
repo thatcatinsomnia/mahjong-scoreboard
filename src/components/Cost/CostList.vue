@@ -13,12 +13,9 @@
           <span class="p-3 flex-1">成本</span>
         </div>
 
-        <CostRowData v-for="cost in state.costs" 
-          :key="cost.name"
+        <CostRowData v-for="cost in costs" 
+          :key="cost.id"
           :cost="cost"
-          @deleteCost="deleteCost"
-          @updateName="updateName"
-          @updateValue="updateValue"
         />
       </div>
       
@@ -34,6 +31,7 @@
 <script>
 import { ref, reactive, computed } from 'vue';
 import CostRowData from '/@/components/Cost/CostRowData.vue'
+import { useCostContext } from '/@/composables/cost';
 
 export default {
   name: 'CostList',
@@ -41,71 +39,35 @@ export default {
     CostRowData
   },
   setup() {
+    const { costs, addNewCost } = useCostContext();
     const newCostName = ref('');
-    const state = reactive({
-      costs: [
-        {
-          id: Math.random().toString(36).substring(2),
-          name: '飲料',
-          value: 500
-        },
-        {
-          id: Math.random().toString(36).substring(2),
-          name: '清潔費',
-          value: 599
-        },
-        {
-          id: Math.random().toString(36).substring(2),
-          name: '晚餐',
-          value: 800
-        }
-      ]
-    });
-   
+    
     const addCost = () => {
       if (!newCostName.value) return;
 
-      state.costs.push({
+      addNewCost({
         id: Math.random().toString(36).substring(2),
-        name: newCostName.value,
+        item: newCostName.value,
         value: 0
       });
 
       newCostName.value = '';
     };
 
-    const deleteCost = id => {
-      const index = state.costs.findIndex(cost => cost.id === id);
-      state.costs.splice(index, 1);
-    };
-
-    const updateName = ({id, name}) => {
-      const cost = state.costs.find(cost => cost.id === id);
-      cost.name = name;
-    };
-
-    const updateValue = ({id, value}) => {
-      const cost = state.costs.find(cost => cost.id === id);
-      cost.value = value;
-    };
-
     const totalCost = computed(() => {
       let total = 0;
 
-      state.costs.forEach(cost => {
-        total += parseInt(cost.value);
-      });
+      // costs.value.forEach(cost => {
+      //   total += parseInt(cost.value);
+      // });
 
       return total;
     });
 
     return {
       newCostName,
-      state,
+      costs,
       addCost,
-      deleteCost,
-      updateName,
-      updateValue,
       totalCost,
     }
   }
