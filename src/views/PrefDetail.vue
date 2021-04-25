@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isSubmit">
     <Title>{{ title }}</Title>
-    <div class="mb-1 px-6 flex justify-end" v-if="isEdit">
+    <div class="mb-1 mx-auto flex justify-end max-w-3xl" v-if="isEdit">
       <button class="px-6 py-1 bg-red-500 hover:bg-red-600 transition text-white rounded" @click="deletePref($route.params.id)">刪除</button>
     </div>
     <div class="mx-auto px-6 py-10 mb-12 max-w-3xl rounded shadow-lg border-t-4 border-green-500 text-gray-600 ">
