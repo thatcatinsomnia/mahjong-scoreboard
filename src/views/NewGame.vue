@@ -100,8 +100,8 @@ export default {
     };
 
     onBeforeMount(async () => {
-      const res = await PrefServices.fetchAll();
-      state.prefs = res.data;
+      const prefs = await PrefServices.fetchAll();
+      state.prefs = prefs.data;
     });
 
     return {

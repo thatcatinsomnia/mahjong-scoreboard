@@ -3,8 +3,22 @@
     <h2 class="py-5 text-center text-2xl text-gray-500">遊戲玩家</h2>
     <div class="mx-auto max-w-2xl rounded">
       <div class="mb-6 flex">
-        <input type="text" class="px-2 py-2 h-full text-xl rounded border border-gray-300 block flex-1 outline-none focus:ring-2 focus:ring-green-500" placeholder="新增玩家..." v-model="newPlayerName" @keydown.enter="addPlayer">
-        <button class="ml-2 px-4 py-2 bg-green-500 text-white rounded" @click="addPlayer">Create</button>
+        <div class="flex-1 relative">
+          <input type="text" class="w-full px-2 py-2 h-full text-xl rounded border border-gray-300 block outline-none focus:ring-2 focus:ring-green-500" placeholder="新增玩家..." 
+            v-model="newPlayerName" 
+            @keydown.enter="addGamePlayer"
+            @focus="isShowFriends = true"
+            @blur="isShowFriends = false"
+          >
+            <ul class="py-2 absolute top-full left-0 w-full h-44 border border-gray-300 bg-gray-100 rounded z-10 overflow-y-scroll" v-show="isShowFriends">
+              <li v-for="friend in filterFriends" :key="friend.name" class="p-3 cursor-pointer hover:bg-gray-300" 
+                @mousedown="addGamePlayerFromFriend(friend)"
+              >
+                {{ friend.name }}
+              </li>
+            </ul>
+        </div>
+        <button class="ml-2 px-4 py-2 bg-green-500 text-white rounded" @click="addGamePlayer">Create</button>
       </div>
 
       <div class="divide-y rounded shadow">
@@ -13,13 +27,10 @@
           <span class="p-3 flex-1">玩家分數</span>
         </div>
 
-          <PlayerRowData v-for="player in state.players" 
-            :key="player.id"
-            :player="player"
-            @deletePlayer="deletePlayer"
-            @updateName="updateName"
-            @updateScore="updateScore"
-          />
+        <PlayerRowData v-for="player in players" 
+          :key="player.name"
+          :player="player"
+        />
       </div>
       
       <div class="mt-4 flex">
@@ -32,8 +43,9 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import PlayerRowData from '/@/components/Player/PlayerRowData.vue';
+import { usePlayerContext } from '/@/composables/player';
 
 export default {
   name: 'PlayerList',
@@ -41,78 +53,57 @@ export default {
     PlayerRowData
   },
   setup() {
+    const { initFriends, userFriends, players, addPlayer } = usePlayerContext();
+    const isShowFriends = ref(false);
     const newPlayerName = ref('');
 
-    const state = reactive({
-      players: [
-        {
-          id: Math.random().toString(36).substring(2),
-          name: '小華',
-          score: 500
-        },
-        {
-          id: Math.random().toString(36).substring(2),
-          name: '小明',
-          score: -6500
-        },
-        {
-          id: Math.random().toString(36).substring(2),
-          name: 'JOE',
-          score: -500
-        },
-        {
-          id: Math.random().toString(36).substring(2),
-          name: 'TOM',
-          score: -200
-        }
-      ]
-    });
+    const addGamePlayer = event => {
+      const duplicatePlayer = players.value.find(player => player.name === newPlayerName.value);
 
-    const addPlayer = () => {
-      if (!newPlayerName.value) return;
+      if (duplicatePlayer || !newPlayerName.value) {
+        newPlayerName.value = '';
+        return
+      };
 
-      state.players.push({
-        id: Math.random().toString(36).substring(2),
-        name: newPlayerName.value,
-        score: 0
-      });
+      addPlayer(newPlayerName.value);
 
       newPlayerName.value = '';
     };
 
-    const deletePlayer = id => {
-      const index = state.players.findIndex(player => player.id === id);
-      state.players.splice(index, 1);
-    };
 
-    const updateName = ({id, name}) => {
-      const player = state.players.find(player => player.id === id);
-      player.name = name;
-    };
-
-    const updateScore = ({id, score}) => {
-      const player = state.players.find(player => player.id === id);
-      player.score = score;
-    };
+    const filterFriends = computed(() => {
+      return userFriends.value.filter(friend => friend.name.includes(newPlayerName.value));
+    });
 
     const totalScore = computed(() => {
       let total = 0;
 
-      state.players.forEach(player => {
+      players.value.forEach(player => {
         total += parseInt(player.score);
       });
 
       return total;
     });
 
+    const addGamePlayerFromFriend = friend => {
+      newPlayerName.value = friend.name;
+      addGamePlayer();
+      isShowFriends.value = false;
+    };
+
+    onBeforeMount(() => {
+      initFriends();
+    });
+
     return {
       newPlayerName,
-      state,
-      addPlayer,
-      deletePlayer,
-      updateName,
-      updateScore,
-      totalScore
+      players,
+      userFriends,
+      addGamePlayer,
+      totalScore,
+      isShowFriends,
+      addGamePlayerFromFriend,
+      filterFriends
     }
   }
 }
