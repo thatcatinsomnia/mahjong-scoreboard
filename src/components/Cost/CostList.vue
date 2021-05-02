@@ -14,7 +14,7 @@
         </div>
 
         <CostRowData v-for="cost in costs" 
-          :key="cost.id"
+          :key="cost.item"
           :cost="cost"
         />
       </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from 'vue';
+import { ref, computed } from 'vue';
 import CostRowData from '/@/components/Cost/CostRowData.vue'
 import { useCostContext } from '/@/composables/cost';
 
@@ -46,7 +46,6 @@ export default {
       if (!newCostName.value) return;
 
       addNewCost({
-        id: Math.random().toString(36).substring(2),
         item: newCostName.value,
         value: 0
       });

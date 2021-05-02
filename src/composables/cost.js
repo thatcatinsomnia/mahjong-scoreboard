@@ -11,14 +11,14 @@ export function useCostProvider() {
     state.costs.push(cost)
   };
 
-  const updateCostItem = (id, newItem) => {
-    const cost = state.costs.find(cost => cost.id === id);
+  const updateCostItem = (item, newItem) => {
+    const cost = state.costs.find(cost => cost.item === item);
     cost.item = newItem;
   };
 
-  const updateCostValue = (id, newValue) => {
-    const cost = state.costs.find(cost => cost.id === id);
-    cost.value = newValue;
+  const updateCostValue = (item, newValue) => {
+    const cost = state.costs.find(cost => cost.item === item);
+    cost.value = parseInt(newValue);
   };
 
   const deleteCost = id => {
@@ -26,12 +26,17 @@ export function useCostProvider() {
     state.costs.splice(index, 1);
   };
 
+  const clearCosts = () => {
+    state.costs = [];
+  };
+
   provide(COST_CONTEXT, {
     ...toRefs(state),
     addNewCost,
     updateCostItem,
     updateCostValue,
-    deleteCost
+    deleteCost,
+    clearCosts
   });
 }
 

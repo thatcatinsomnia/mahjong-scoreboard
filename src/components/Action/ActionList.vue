@@ -16,11 +16,11 @@ export default {
     const actions = [
       {
         name: '新增遊戲紀錄',
-        path: '/game/new'
+        path: '/game-records/new'
       },
       {
-        name: '報表查詢',
-        path: '/report'
+        name: '歷史紀錄查詢',
+        path: '/game-records'
       },
       {
         name: '遊戲設定檔',

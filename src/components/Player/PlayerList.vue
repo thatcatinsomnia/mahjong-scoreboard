@@ -10,12 +10,18 @@
             @focus="isShowFriends = true"
             @blur="isShowFriends = false"
           >
-            <ul class="py-2 absolute top-full left-0 w-full h-44 border border-gray-300 bg-gray-100 rounded z-10 overflow-y-scroll" v-show="isShowFriends">
-              <li v-for="friend in filterFriends" :key="friend.name" class="p-3 cursor-pointer hover:bg-gray-300" 
-                @mousedown="addGamePlayerFromFriend(friend)"
-              >
-                {{ friend.name }}
-              </li>
+            <ul class="py-2 absolute top-full transform translate-y-1 left-0 w-full h-56 border border-gray-300 bg-gray-100 rounded z-10 overflow-y-scroll flex flex-col items-center content-center" v-show="isShowFriends">
+              <template v-if="filterFriends.length > 0">
+                <li v-for="friend in filterFriends" :key="friend.name" class="p-3 w-full cursor-pointer hover:bg-gray-300" 
+                  @mousedown="addGamePlayerFromFriend(friend)"
+                >
+                  {{ friend.name }}
+                </li>
+              </template>
+              <template v-else>
+                <li class="text-center">沒有搜尋結果</li>
+                <li class="text-center">(點擊enter或按鈕新增)</li>
+              </template>
             </ul>
         </div>
         <button class="ml-2 px-4 py-2 bg-green-500 text-white rounded" @click="addGamePlayer">Create</button>
@@ -58,6 +64,11 @@ export default {
     const newPlayerName = ref('');
 
     const addGamePlayer = event => {
+      if (event && event.target.nodeName === "INPUT") {
+        console.log()
+        event.target.blur();
+      }
+
       const duplicatePlayer = players.value.find(player => player.name === newPlayerName.value);
 
       if (duplicatePlayer || !newPlayerName.value) {
@@ -69,7 +80,6 @@ export default {
 
       newPlayerName.value = '';
     };
-
 
     const filterFriends = computed(() => {
       return userFriends.value.filter(friend => friend.name.includes(newPlayerName.value));

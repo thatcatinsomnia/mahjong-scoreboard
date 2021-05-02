@@ -8,9 +8,14 @@ const routes = [
     component: Home,
   },
   {
-    path: "/game/new",
+    path: "/game-records/new",
     name: "NewGame",
-    component: () => import('/@/views/NewGame.vue')
+    component: () => import('/@/views/NewGameRecord.vue')
+  },
+  {
+    path: "/game-records",
+    name: "GameRecord",
+    component: () => import('/@/views/GameRecord.vue')
   },
   {
     path: '/preferences/new',

@@ -25,9 +25,11 @@ export function usePlayerProvider() {
         score: 0
       });
     } else {
+      // todo: handle user id
       state.players.push({
         name,
-        score: 0
+        score: 0,
+        user_id: 2, 
       });
     }
   };
@@ -44,12 +46,17 @@ export function usePlayerProvider() {
     state.players.splice(index, 1);
   };
 
+  const clearPlayers = () => {
+    state.players = [];
+  };
+
   provide(PLAYER_CONTEXT, {
     ...toRefs(state),
     initFriends,
     addPlayer,
     updateScore,
-    deletePlayer
+    deletePlayer,
+    clearPlayers
   });
 }
 
