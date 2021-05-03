@@ -7,8 +7,17 @@ export default (function() {
     try {
       const res = await axios.get(url, { params });
       return res;
-    } catch (err) {
-      return err.response; 
+    } catch (error) {
+      return error.response; 
+    }
+  };
+
+  const fetchById = async id => {
+    try {
+      const res = await axios.get(`${url}/${id}`);
+      return res;
+    } catch (error) {
+      return error.response; 
     }
   };
 
@@ -16,13 +25,25 @@ export default (function() {
     try {
       const res = await axios.post(url, gameRecord);
       return res;
-    } catch (err) {
-      return err.response; 
+    } catch (error) {
+      return error.response; 
     }
   };
 
+  const update = async (id, gameRecord) => {
+    try {
+      const res = await axios.patch(`${url}/${id}`, gameRecord);
+      return res;
+    } catch (error) {
+      
+    }
+  }
+
+
   return {
     fetchAll,
-    create
+    fetchById,
+    create,
+    update
   };
 })();

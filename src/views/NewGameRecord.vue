@@ -29,7 +29,7 @@
       <div class="mb-4">
         <div class="mb-2">
           <label class="py-2 mr-2 block">快速讀取設定檔</label>
-          <select class="p-1 border border-gray-400 rounded" @change="updateConfig">
+          <select class="p-1 border border-gray-400 rounded" @change="onChangePref">
             <option value="null" selected>請選擇設定檔</option>
             <option :value="pref.id" v-for="pref in prefs" :key="pref.id">{{ pref.name }}</option>
           </select>
@@ -44,19 +44,19 @@
 
         <div class="flex-1">
           <label class="block mb-1">單次東錢：</label>
-          <input class="ml-2 px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model="formData.pref.price">
+          <input class="ml-2 px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model.number="formData.pref.price">
         </div>
       </div>
 
       <div class="flex mb-2">
         <div class="flex-1">
           <label class="block mb-1">次數：</label>
-          <input class="px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model="formData.pref.times">
+          <input class="px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text" v-model.number="formData.pref.times">
         </div>
 
         <div class="flex-1">
           <label class="block mb-1">回合/降：</label>
-          <input class="ml-2 px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text"  v-model="formData.pref.rounds">
+          <input class="ml-2 px-1 py-2 w-full border border-gray-300 outline-none focus:ring-2 focus:ring-green-500" type="text"  v-model.number="formData.pref.rounds">
         </div>
       </div>
 
@@ -76,7 +76,7 @@
 
 <script>
 import { ref, reactive, computed, onBeforeMount } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import moment from 'moment-timezone';
 import Title from '/@/components/UI/Title.vue';
 import PlayerList from '/@/components/Player/PlayerList.vue';
@@ -88,14 +88,18 @@ import { usePlayerContext } from '/@/composables/player';
 import { useCostContext } from '/@/composables/cost';
 
 export default {
-  name: 'NewGame',
+  name: 'NewGameRecord',
   components: {
     Title,
     PlayerList,
     CostList
   },
-  setup() {
+  props: {
+    isEdit: Boolean
+  },
+  setup(props) {
     const router = useRouter();
+    const route = useRoute();
     const startAtInput = ref();
     const endAtInput = ref();
     const { players, clearPlayers } = usePlayerContext();
@@ -127,12 +131,13 @@ export default {
       return total;
     });
 
-    const updateConfig = event => {
+    const onChangePref = event => {
       const pickedId = event.target.value;
       const picked = prefs.value.find(pref => pref.id.toString() === pickedId);
 
       if (picked) {
         formData.pref = picked;
+        formData.pref.reference_id = picked.id;
       } else {
         formData.pref = {
           id: '',
@@ -146,12 +151,12 @@ export default {
     };
 
     const createGameRecord = async () => {
-      const { rate, price, times, rounds } = formData.pref;
+      const { id, rate, price, times, rounds } = formData.pref;
 
       const startAt = parseZuluTime(startAtInput.value);
       const endAt = parseZuluTime(endAtInput.value);
 
-      const gameRecord = {
+      const newRecord = {
         start_at:  startAt,
         end_at: endAt,
         rate,
@@ -162,11 +167,11 @@ export default {
         costs: costs.value
       };
 
-      console.log(gameRecord.start_at);
-      console.log(gameRecord.end_at);
-    return;
-      
-      const res = await GameServices.create(gameRecord);
+      if (id) {
+        newRecord.preference_id = id;
+      }
+
+      const res = await GameServices.create(newRecord);
 
       if (res.status === 201) {
         clearPlayers();
@@ -207,7 +212,7 @@ export default {
       prefs,
       formData,
       totalPrice,
-      updateConfig,
+      onChangePref,
       createGameRecord,
       totalCosts,
       onCancelCreate,

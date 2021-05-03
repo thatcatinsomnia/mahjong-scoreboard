@@ -7,8 +7,8 @@ export default (function() {
     try {
       const res = await axios.get(url);
       return res;
-    } catch (err) {
-      return err.response; 
+    } catch (error) {
+      return error.response; 
     }
   };
 

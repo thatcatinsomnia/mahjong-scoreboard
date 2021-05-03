@@ -14,6 +14,10 @@ export function usePlayerProvider() {
     state.userFriends = res.data;
   };
 
+  const initPlayers = players => {
+    state.players = players;
+  };
+
   const addPlayer = name => {
     const existPlayer = state.userFriends.find(friend => friend.name === name);
 
@@ -53,6 +57,7 @@ export function usePlayerProvider() {
   provide(PLAYER_CONTEXT, {
     ...toRefs(state),
     initFriends,
+    initPlayers,
     addPlayer,
     updateScore,
     deletePlayer,

@@ -9,12 +9,17 @@ const routes = [
   },
   {
     path: "/game-records/new",
-    name: "NewGame",
+    name: "NewGameRecord",
     component: () => import('/@/views/NewGameRecord.vue')
   },
   {
+    path: "/game-records/:id/edit",
+    name: "EditGameRecord",
+    component: () => import('/@/views/EditGameRecord.vue'),
+  },
+  {
     path: "/game-records",
-    name: "GameRecord",
+    name: "GameRecords",
     component: () => import('/@/views/GameRecord.vue')
   },
   {

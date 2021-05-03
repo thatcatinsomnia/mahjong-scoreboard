@@ -13,6 +13,7 @@
 
 <script>
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 import moment from 'moment-timezone';
 
 export default {
@@ -21,6 +22,8 @@ export default {
     record: Object
   },
   setup(props) {
+    const router = useRouter();
+
     const parseTimeZone = computed(() => {
       return time => {
         const tz = moment(time).tz('Asia/Taipei').format('MM/DD HH:mm');
@@ -54,7 +57,7 @@ export default {
     });
 
     const goEditPage = () => {
-      console.log('go');
+      router.replace({ name: 'EditGameRecord', params: { id: props.record.id } });
     };
 
     return {

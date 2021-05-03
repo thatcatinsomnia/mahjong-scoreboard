@@ -7,8 +7,8 @@ export default (function() {
     try {
       const res = await axios.get(url);
       return res;
-    } catch (err) {
-      return err.response;
+    } catch (error) {
+      return error.response;
     }
   };
 
@@ -16,8 +16,8 @@ export default (function() {
     try {
       const res = await axios.get(`${url}/${id}`);
       return res
-    } catch (err) {
-      return err.response;
+    } catch (error) {
+      return error.response;
     }
   };
 
@@ -25,8 +25,8 @@ export default (function() {
     try {
       const res = await axios.post(url, pref);
       return res;
-    } catch (err) {
-      return err.response;
+    } catch (error) {
+      return error.response;
     }
   }
 
@@ -34,8 +34,8 @@ export default (function() {
     try {
       const res = await axios.patch(`${url}/${id}`, pref);
       return res;
-    } catch (err) {
-      return err.response;
+    } catch (error) {
+      return error.response;
     }
   };
 
@@ -43,8 +43,8 @@ export default (function() {
     try {
       const res = await axios.delete(`${url}/${id}`);
       return res;
-    } catch (err) {
-      return err.response;
+    } catch (error) {
+      return error.response;
     }
   };
 

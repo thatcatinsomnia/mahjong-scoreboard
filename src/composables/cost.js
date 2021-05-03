@@ -7,6 +7,10 @@ export function useCostProvider() {
     costs: []
   });
 
+  const initCosts = costs => {
+    state.costs = costs;
+  }
+
   const addNewCost = cost => {
     state.costs.push(cost)
   };
@@ -32,6 +36,7 @@ export function useCostProvider() {
 
   provide(COST_CONTEXT, {
     ...toRefs(state),
+    initCosts,
     addNewCost,
     updateCostItem,
     updateCostValue,
