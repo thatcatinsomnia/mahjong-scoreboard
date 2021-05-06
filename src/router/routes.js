@@ -1,11 +1,25 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Home from '/@/views/Home.vue';
 
+function isLoggedIn(to, from, next) {
+  if (localStorage.jwt) {
+    next();
+  } else {
+    next({ name: 'Login' });
+  }
+}
+
 const routes = [
   {
     path: "/",
     name: "Home",
     component: Home,
+    beforeEnter: isLoggedIn
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: () => import('/@/views/Login.vue')
   },
   {
     path: "/game-records/new",
