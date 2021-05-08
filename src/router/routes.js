@@ -1,11 +1,21 @@
-import { createWebHistory, createRouter } from "vue-router";
+import setAuthorizationHeader from '/@/lib/setAuthorizationHeader';
+import { createWebHistory, createRouter, useRouter } from "vue-router";
 import Home from '/@/views/Home.vue';
 
 function isLoggedIn(to, from, next) {
   if (localStorage.jwt) {
+    setAuthorizationHeader();
     next();
   } else {
     next({ name: 'Login' });
+  }
+}
+
+function redirectToHomeIfLoggedIn(to, from, next) {
+  if (localStorage.jwt) {
+    next({ name: 'Home' });
+  } else {
+    next();
   }
 }
 
@@ -19,27 +29,32 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: () => import('/@/views/Login.vue')
+    component: () => import('/@/views/Login.vue'),
+    beforeEnter: redirectToHomeIfLoggedIn
   },
   {
     path: "/game-records/new",
     name: "NewGameRecord",
-    component: () => import('/@/views/NewGameRecord.vue')
+    component: () => import('/@/views/NewGameRecord.vue'),
+    beforeEnter: isLoggedIn
   },
   {
     path: "/game-records/:id/edit",
     name: "EditGameRecord",
     component: () => import('/@/views/EditGameRecord.vue'),
+    beforeEnter: isLoggedIn
   },
   {
     path: "/game-records",
     name: "GameRecords",
-    component: () => import('/@/views/GameRecord.vue')
+    component: () => import('/@/views/GameRecord.vue'),
+    beforeEnter: isLoggedIn
   },
   {
     path: '/preferences/new',
     name: 'NewPreference',
     component: () => import('/@/views/PrefDetail.vue'),
+    beforeEnter: isLoggedIn,
     props: {
       isEdit: false
     }
@@ -48,6 +63,7 @@ const routes = [
     path: '/preferences/:id',
     name: 'EditPreference',
     component: () => import('/@/views/PrefDetail.vue'),
+    beforeEnter: isLoggedIn,
     props: {
       isEdit: true
     }
@@ -55,12 +71,14 @@ const routes = [
   {
     path: "/preferences",
     name: 'Preferences',
-    component: () => import('/@/views/Prefs.vue')
+    component: () => import('/@/views/Prefs.vue'),
+    beforeEnter: isLoggedIn
   },
   {
     path: "/card-type",
     name: 'CardType',
-    component: () => import('/@/views/CardType.vue')
+    component: () => import('/@/views/CardType.vue'),
+    beforeEnter: isLoggedIn
   }
 ];
 

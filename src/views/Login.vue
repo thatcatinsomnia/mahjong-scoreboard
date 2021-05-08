@@ -5,7 +5,7 @@
     <div class="p-8 rounded text-lg">
       <FormGroup class="mb-6">
           <FormLabel text="信箱"/>
-          <FormInput type="text" placeholder="請輸入信箱" v-model="userInfo.email" />
+          <FormInput type="text" placeholder="請輸入信箱" v-model.trim="userInfo.email" />
       </FormGroup>
 
       <FormGroup class="mb-12">
