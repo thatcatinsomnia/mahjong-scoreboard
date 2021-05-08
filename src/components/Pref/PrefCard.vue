@@ -21,7 +21,11 @@
         <template v-slot:label>次數：</template>
         <template v-slot:value>{{ pref.times }}</template>
       </PrefColumn>
-
+      <PrefColumn>
+        <template v-slot:label>回合/降：</template>
+        <template v-slot:value>{{ pref.rounds }}</template>
+      </PrefColumn>
+      
       <PrefHands :handPoints="pref.handPoints" />
     </div>
   </div>
@@ -29,6 +33,7 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import Hashids from 'hashids'
 import PrefColumn from '/@/components/Pref/PrefColumn.vue';
 import PrefHands from '/@/components/Pref/PrefHands.vue';
 
@@ -43,11 +48,12 @@ export default {
   },
   setup() {
     const router = useRouter();
+    const goEditPage = id => {
+      const hashids = new Hashids()
 
-    const goEditPage = (id) => {
       router.push({
         name: 'EditPreference',
-        params: { id }
+        params: { id: hashids.encode(id) }
       });
     };
 

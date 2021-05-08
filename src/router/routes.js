@@ -53,20 +53,15 @@ const routes = [
   {
     path: '/preferences/new',
     name: 'NewPreference',
-    component: () => import('/@/views/PrefDetail.vue'),
-    beforeEnter: isLoggedIn,
-    props: {
-      isEdit: false
-    }
+    component: () => import('/@/views/PrefCreate.vue'),
+    beforeEnter: isLoggedIn
   },
   {
     path: '/preferences/:id',
     name: 'EditPreference',
-    component: () => import('/@/views/PrefDetail.vue'),
-    beforeEnter: isLoggedIn,
-    props: {
-      isEdit: true
-    }
+    props: true,
+    component: () => import('/@/views/PrefEdit.vue'),
+    beforeEnter: isLoggedIn
   },
   {
     path: "/preferences",

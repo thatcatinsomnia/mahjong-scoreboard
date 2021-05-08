@@ -7,6 +7,9 @@
     <template v-if="prefs.length">
       <PrefCard v-for="pref in prefs" :key="pref.id" :pref="pref"/>
     </template>
+    <template v-else>
+      <p class="py-12 text-green-600 text-center border border-gray-300 rounded shadow">尚未擁有設定檔</p>
+    </template>
   </main>
 </template>
 
@@ -33,6 +36,8 @@ export default {
       const res = await prefServices.fetchAll();
       if (res.status === 200) {
         prefs.value = res.data;
+      } else if (res.status === 401) {
+        localStorage.removeItem('jwt');
       }
     });
 

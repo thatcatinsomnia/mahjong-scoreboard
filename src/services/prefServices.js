@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default (function() {
-  const url = '/api/v1/users/2/preferences';
+  const url = '/api/v1/preferences';
   
   const fetchAll = async () => {
     try {
@@ -26,6 +26,7 @@ export default (function() {
       const res = await axios.post(url, pref);
       return res;
     } catch (error) {
+      console.log(error);
       return error.response;
     }
   }
