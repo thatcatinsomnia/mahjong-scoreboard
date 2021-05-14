@@ -79,6 +79,7 @@
 import { ref, reactive, computed, onBeforeMount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import moment from 'moment-timezone';
+import Hashids from 'hashids';
 import Title from '/@/components/UI/Title.vue';
 import PlayerList from '/@/components/Player/PlayerList.vue';
 import CostList from '/@/components/Cost/CostList.vue';
@@ -97,6 +98,9 @@ export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
+
+    const hashids = new Hashids();
+    const recordId = hashids.decode(route.params.id);
 
     const isSubmit = ref(false);
 
@@ -152,7 +156,7 @@ export default {
       };
 
       
-      const res = await GameServices.update(route.params.id, gameRecord);
+      const res = await GameServices.update(recordId, gameRecord);
 
       if (res.status === 200) {
         alert('success');
@@ -173,7 +177,7 @@ export default {
     };
 
     onBeforeMount(async () => {
-      const gameRecord = await GameServices.fetchById(route.params.id);
+      const gameRecord = await GameServices.fetchById(recordId);
       const { start_at, end_at, id, rate, price, rounds, times, costs, players } = gameRecord.data;
 
       pref.id = id;

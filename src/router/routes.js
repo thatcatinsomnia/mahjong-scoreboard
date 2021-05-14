@@ -40,9 +40,9 @@ const routes = [
     beforeEnter: isLoggedIn
   },
   {
-    path: "/game-records/:id/edit",
+    path: "/game-records/:id",
     name: "EditGameRecord",
-    component: () => import('/@/views/EditGameRecord.vue'),
+    component: () => import('/@/views/GameRecordEdit.vue'),
     beforeEnter: isLoggedIn
   },
   {
@@ -89,7 +89,6 @@ const router = createRouter({
 axios.interceptors.response.use(res => {
   return res;
 }, error => {
-
   // todo: check user not have permission or jwt expired
   if (error.response.status === 401) {
     router.replace({ name: 'Login' });

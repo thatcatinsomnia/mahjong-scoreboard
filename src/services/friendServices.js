@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default (function() {
-  const url = '/api/v1/users/2/friends';
+  const url = '/api/v1/friends';
   
   const fetchAll = async () => {
     try {

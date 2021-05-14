@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default (function() {
-  const url = '/api/v1/users/2/game-records';
+  const url = '/api/v1/game-records';
   
   const fetchAll = async (params = null) => {
     try {

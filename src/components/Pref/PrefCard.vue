@@ -33,7 +33,7 @@
 
 <script>
 import { useRouter } from 'vue-router';
-import Hashids from 'hashids'
+import Hashids from 'hashids';
 import PrefColumn from '/@/components/Pref/PrefColumn.vue';
 import PrefHands from '/@/components/Pref/PrefHands.vue';
 

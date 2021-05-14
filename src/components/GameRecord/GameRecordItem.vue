@@ -6,7 +6,7 @@
     <div class="flex-1 p-4">{{ sumOfCosts }}</div>
     <div class="flex-1 p-4" :class="total > 0 ? 'text-green-500': 'text-red-500'">{{ total }}</div>
      <div class="flex-1 p-4">
-       <button class="bg-yellow-400 text-white px-4 py-1 rounded text-sm" @click="goEditPage">修改</button>
+       <button class="bg-yellow-400 text-white px-4 py-1 rounded text-sm" @click="goEditPage(record.id)">修改</button>
      </div>
   </div>
 </template>
@@ -15,6 +15,7 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import moment from 'moment-timezone';
+import Hashids from 'hashids';
 
 export default {
   name: 'GameRecordItem',
@@ -56,8 +57,13 @@ export default {
       return total;
     });
 
-    const goEditPage = () => {
-      router.replace({ name: 'EditGameRecord', params: { id: props.record.id } });
+    const goEditPage = id => {
+      const hashids = new Hashids()
+
+      router.replace({ 
+        name: 'EditGameRecord', 
+        params: { id: hashids.encode(id) } 
+      });
     };
 
     return {
