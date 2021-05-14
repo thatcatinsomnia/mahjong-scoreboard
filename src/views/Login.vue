@@ -54,7 +54,10 @@ export default {
       const res = await AuthServices.login(userInfo);
     
       if (res.status === 200) {
-        localStorage.jwt = res.data.token;
+        const { accessToken, refreshToken } = res.data;
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        
         router.replace({ name: 'Home' });
       }
     };

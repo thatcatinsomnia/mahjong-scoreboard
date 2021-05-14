@@ -14,8 +14,8 @@ export default {
     ActionList
   },
   setup() {
-    const jwtToken = localStorage.jwt;
-    const user = decode(jwtToken);
+    const accessToken = localStorage.getItem('accessToken');
+    const user = decode(accessToken);
 
     return {
       user

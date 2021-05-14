@@ -1,9 +1,10 @@
+import { createWebHistory, createRouter } from "vue-router";
+import axios from 'axios';
 import setAuthorizationHeader from '/@/lib/setAuthorizationHeader';
-import { createWebHistory, createRouter, useRouter } from "vue-router";
 import Home from '/@/views/Home.vue';
 
 function isLoggedIn(to, from, next) {
-  if (localStorage.jwt) {
+  if (localStorage.getItem('accessToken')) {
     setAuthorizationHeader();
     next();
   } else {
@@ -12,7 +13,7 @@ function isLoggedIn(to, from, next) {
 }
 
 function redirectToHomeIfLoggedIn(to, from, next) {
-  if (localStorage.jwt) {
+  if (localStorage.getItem('accessToken')) {
     next({ name: 'Home' });
   } else {
     next();
@@ -83,6 +84,17 @@ const router = createRouter({
   scrollBehavior (to, from, savedPosition) {
     return { top: 0, left: 0 }
   }
+});
+
+axios.interceptors.response.use(res => {
+  return res;
+}, error => {
+
+  // todo: check user not have permission or jwt expired
+  if (error.response.status === 401) {
+    router.replace({ name: 'Login' });
+  }
+  return Promise.reject(error);
 });
 
 export default router;
